@@ -5,11 +5,11 @@ export async function handleDeleteFile(request, env, ctx) {
 
     const filePath = decodeURIComponent(url.pathname.slice(1)); // Remove leading slash
     const sanitizedPath = sanitizePath(filePath);
-    
+
     if (!sanitizedPath) {
         return new Response("文件路径无效，请检查文件名是否包含不支持的特殊字符", { status: 400 });
     }
-    
+
     try {
         await env.MY_BUCKET.delete(sanitizedPath);
 
@@ -35,7 +35,7 @@ export async function handleMultipleUploads(request, env, ctx) {
     try {
         const formData = await request.formData();
         const results = [];
-        
+
         for (const entry of formData.entries()) {
             const [fieldName, file] = entry;
             if (file instanceof File) {
@@ -43,20 +43,20 @@ export async function handleMultipleUploads(request, env, ctx) {
                 const extension = filename.split(".").pop().toLowerCase();
                 const contentType = mimeTypes[extension] || mimeTypes.default;
                 const data = await file.arrayBuffer();
-                
+
                 // 安全检查
                 const sanitizedFilename = sanitizePath(filename);
                 if (!sanitizedFilename) {
                     results.push({ filename, status: "failed", error: "文件名包含不支持的特殊字符" });
                     continue;
                 }
-                
+
                 // 验证文件内容
                 if (!validateFileContent(extension, data)) {
                     results.push({ filename, status: "failed", error: "文件内容与扩展名不匹配" });
                     continue;
                 }
-                
+
                 try {
                     await env.MY_BUCKET.put(sanitizedFilename, data, { httpMetadata: { contentType } });
                     results.push({ sanitizedFilename, status: "success", contentType });
@@ -65,9 +65,9 @@ export async function handleMultipleUploads(request, env, ctx) {
                     const cache = caches.default;
                     const cacheKey = new Request(new URL("/", request.url).toString());
                     ctx.waitUntil(cache.delete(cacheKey));
-                    
+
                     // 同时清除PROPFIND缓存
-                    const propfindKey = new Request(new URL("/", request.url).toString(), { 
+                    const propfindKey = new Request(new URL("/", request.url).toString(), {
                         method: 'PROPFIND',
                         headers: { 'Depth': '1' }
                     });
@@ -84,7 +84,7 @@ export async function handleMultipleUploads(request, env, ctx) {
         });
     } catch (error) {
         console.error("Form processing error:", error.name);
-        return new Response(JSON.stringify({ error: "处理上传请求失败，请检查文件格式和大小" }), { 
+        return new Response(JSON.stringify({ error: "处理上传请求失败，请检查文件格式和大小" }), {
             status: 500,
             headers: { ...corsHeaders, "Content-Type": "application/json" }
         });
@@ -95,7 +95,7 @@ export async function handleGetFile(request, env) {
     try {
         let path = new URL(request.url).pathname;
         const filename = decodeURIComponent(path.slice(1));
-        
+
         if (path === '/') {
             path = '/web';
             return new Response(null, {
@@ -107,12 +107,12 @@ export async function handleGetFile(request, env) {
                 },
             });
         }
-        
+
         const sanitizedFilename = sanitizePath(filename);
         if (!sanitizedFilename) {
             return new Response("文件路径无效，请检查文件名是否包含不支持的特殊字符", { status: 400, headers: corsHeaders });
         }
-        
+
         const file = await env.MY_BUCKET.get(sanitizedFilename);
 
         if (file === null) {
@@ -149,7 +149,7 @@ export async function handlePutFile(request, env, ctx) {
         const data = await request.arrayBuffer();
         const extension = sanitizedPath.split(".").pop().toLowerCase();
         const contentType = mimeTypes[extension] || "application/octet-stream"; // Fallback MIME type
-        
+
         // 验证文件内容
         if (!validateFileContent(extension, data)) {
             return new Response("文件内容与扩展名不匹配", { status: 400 });
@@ -176,7 +176,7 @@ export async function handleFileList(request, env, ctx) {
         // Handle directory listing (WebDAV-specific)
         const path = new URL(request.url).pathname;
         const prefix = path === "/" ? "" : path.slice(1); // Handle root path
-        
+
         // 安全检查
         if (prefix && !sanitizePath(prefix)) {
             return new Response("目录路径无效，请检查是否包含不支持的特殊字符", { status: 400, headers: corsHeaders });
@@ -192,10 +192,10 @@ export async function handleFileList(request, env, ctx) {
                 return cachedResponse;
             }
         }
-        
+
         // List objects in R2 with the correct prefix
         const objects = await env.MY_BUCKET.list({ prefix });
-        
+
         // Generate WebDAV XML response with proper XML declaration and formatting
         const xmlResponse = `<?xml version="1.0" encoding="UTF-8"?>
 <D:multistatus xmlns:D="DAV:">
@@ -234,12 +234,12 @@ export async function handleFileList(request, env, ctx) {
                 "Cache-Control": "public, max-age=3600"
             },
         });
-        
+
         // 将响应存入缓存
         if (!bypassCache) {
             ctx.waitUntil(cache.put(cacheKey, response.clone()));
         }
-        
+
         return response;
     } catch (error) {
         console.error("File list error:", error.name);
@@ -252,19 +252,19 @@ export async function dumpCache(request, env, ctx) {
     try {
         const listingUrl = new URL('/', url.origin).toString();
         const cache = caches.default;
-        
+
         // 清除GET请求的缓存
         const cacheKey = new Request(listingUrl);
         ctx.waitUntil(cache.delete(cacheKey));
-        
+
         // 清除PROPFIND请求的缓存
-        const propfindKey = new Request(listingUrl, { 
+        const propfindKey = new Request(listingUrl, {
             method: 'PROPFIND',
             headers: { 'Depth': '1' }
         });
         ctx.waitUntil(cache.delete(propfindKey));
-        
-        return new Response('缓存已成功刷新', { 
+
+        return new Response('缓存已成功刷新', {
             status: 200,
             headers: {
                 'Content-Type': 'text/plain;charset=UTF-8',

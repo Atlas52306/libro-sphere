@@ -377,28 +377,28 @@
     <script>
         // 存储认证信息
         let authHeader = '';
-        
+
         // 获取并显示文件列表
         async function loadFileList() {
             try {
-                const response = await fetch('/', { 
+                const response = await fetch('/', {
                     method: 'PROPFIND',
                     headers: {
                         'Cache-Control': 'no-cache',
                         'Pragma': 'no-cache'
                     }
                 });
-                
+
                 if (!response.ok) {
                     throw new Error(`服务器返回错误: ${response.status} ${response.statusText}`);
                 }
-                
+
                 const data = await response.text();
 
                 // 解析XML响应
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(data, "application/xml");
-                
+
                 // 检查是否解析出错
                 const parseError = xmlDoc.querySelector("parsererror");
                 if (parseError) {
@@ -413,13 +413,13 @@
                     // 尝试使用不同的选择器
                     files = xmlDoc.querySelectorAll('*|response');
                 }
-                
+
                 if (files.length === 0) {
                     console.warn("未找到文件列表元素，XML结构可能不符合预期");
                     console.log("文档元素：", xmlDoc.documentElement.tagName);
                     throw new Error("无法识别文件列表格式");
                 }
-                
+
                 const fileList = document.getElementById('fileList');
                 fileList.innerHTML = ''; // 清除现有内容
 
@@ -431,12 +431,12 @@
                         const hrefEl = file.querySelector('D\\:href, href, *|href');
                         const sizeEl = file.querySelector('D\\:getcontentlength, getcontentlength, *|getcontentlength');
                         const dateEl = file.querySelector('D\\:getlastmodified, getlastmodified, *|getlastmodified');
-                        
+
                         if (!hrefEl) {
                             console.warn("文件条目缺少href元素：", file.outerHTML);
                             return;
                         }
-                        
+
                         const href = hrefEl.textContent;
                         const size = sizeEl?.textContent || 'N/A';
                         const lastModified = dateEl?.textContent || 'N/A';
@@ -495,7 +495,7 @@
             if (confirm('确定要刷新文件列表缓存吗？这将显示最新的文件状态。')) {
                 try {
                     const response = await fetch('/dumpcache', { method: 'GET' });
-                    
+
                     if (response.ok) {
                         alert('文件列表已刷新！');
                         loadFileList(); // 刷新文件列表
@@ -528,21 +528,21 @@
         // 添加调试功能
         async function debugFileList() {
             try {
-                const response = await fetch('/', { 
+                const response = await fetch('/', {
                     method: 'PROPFIND',
                     headers: {
                         'Cache-Control': 'no-cache',
                         'Pragma': 'no-cache'
                     }
                 });
-                
+
                 if (!response.ok) {
                     alert(`服务器返回错误: ${response.status} ${response.statusText}`);
                     return;
                 }
-                
+
                 const data = await response.text();
-                
+
                 // 显示原始响应内容
                 const debugInfo = `
 状态码: ${response.status}
@@ -552,14 +552,14 @@
 响应内容预览:
 ${data.substring(0, 500)}${data.length > 500 ? '...(已截断)' : ''}
                 `;
-                
+
                 console.log("完整响应:", data);
                 alert(debugInfo);
             } catch (error) {
                 alert(`诊断时出错: ${error.message}`);
             }
         }
-        
+
         // 显示调试工具
         document.querySelector('.debug-tools').style.display = 'flex';
 
