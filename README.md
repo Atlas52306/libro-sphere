@@ -17,14 +17,14 @@ LibroSphere是一个基于Cloudflare Workers和R2存储构建的现代化电子�
 
 ### 前提准备
 
-- Cloudflare账户（需要信用卡验证，但有免费额度）
+- Cloudflare账户
 - GitHub账户
 
 ### 部署步骤
 
 1. **创建R2存储桶**
    - 登录Cloudflare控制面板
-   - 创建名为`LibroSphere`的R2存储桶
+   - 创建名为`librosphere`的R2存储桶
 
 2. **获取API凭证**
    - 创建Cloudflare API令牌，确保有R2和Workers权限

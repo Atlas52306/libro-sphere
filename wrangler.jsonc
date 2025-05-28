@@ -10,12 +10,6 @@
   "observability": {
     "enabled": true
   },
-   "r2_buckets": [
-    {
-      "binding": "MY_BUCKET", // Name of the binding in your worker
-      "bucket_name": "librosphere" // Name of your R2 bucket
-    }
-  ],
   /**
    * Smart Placement
    * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
