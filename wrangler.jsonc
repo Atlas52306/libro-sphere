@@ -42,12 +42,8 @@
    */
    "assets": {
      "directory": "./src/public",
-     "binding": "ASSETS",
-     "include": ["**/*.html", "**/*.css", "**/*.ico", "**/*.png"],
-     "exclude": [],
-     "browser_TTL": 604800,
-     "serve_single_page_app": true
-   }
+     "binding": "ASSETS"
+   },
   /**
    * Service Bindings (communicate between multiple Workers)
    * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
