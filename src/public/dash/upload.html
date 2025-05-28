@@ -323,6 +323,29 @@
     margin-top: 1rem;
   }
 
+  .progress-container {
+    width: 100%;
+    background-color: #e2e8f0;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 8px;
+    background-color: var(--primary-color);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+  }
+
   .footer {
     display: flex;
     align-items: center;
@@ -593,46 +616,124 @@
         uploadButton.disabled = true;
         uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 上传中...';
 
+        // 显示进度条
+        uploadStatus.innerHTML = `
+          <div class="info" role="status">
+            <i class="fas fa-info-circle"></i> <strong>正在上传文件...</strong>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" id="uploadProgressBar"></div>
+          </div>
+          <div class="progress-info">
+            <span id="uploadPercentage">0%</span>
+            <span id="uploadSpeed">0 KB/s</span>
+          </div>
+        `;
+        
+        const progressBar = document.getElementById('uploadProgressBar');
+        const percentageText = document.getElementById('uploadPercentage');
+        const speedText = document.getElementById('uploadSpeed');
+        
         const formData = new FormData();
         files.forEach(file => formData.append('files', file));
 
         try {
-          const response = await fetch(form.action, {
-            method: 'POST',
-            body: formData
+          // 创建 XMLHttpRequest 以支持上传进度
+          const xhr = new XMLHttpRequest();
+          
+          // 计算上传速度所需的变量
+          let lastLoaded = 0;
+          let lastTime = Date.now();
+          let totalSize = 0;
+          
+          // 计算所有文件的总大小
+          files.forEach(file => totalSize += file.size);
+          
+          // 监听上传进度事件
+          xhr.upload.addEventListener('progress', (event) => {
+            if (event.lengthComputable) {
+              // 计算上传百分比
+              const percentage = Math.round((event.loaded / event.total) * 100);
+              progressBar.style.width = `${percentage}%`;
+              percentageText.textContent = `${percentage}%`;
+              
+              // 计算上传速度
+              const currentTime = Date.now();
+              const elapsedTime = (currentTime - lastTime) / 1000; // 转换为秒
+              
+              if (elapsedTime > 0.5) { // 每0.5秒更新一次速度
+                const loadDifference = event.loaded - lastLoaded;
+                const speed = loadDifference / elapsedTime; // 字节每秒
+                
+                // 格式化速度显示
+                let speedDisplay;
+                if (speed > 1048576) { // 1 MB
+                  speedDisplay = `${(speed / 1048576).toFixed(1)} MB/s`;
+                } else {
+                  speedDisplay = `${(speed / 1024).toFixed(1)} KB/s`;
+                }
+                
+                speedText.textContent = speedDisplay;
+                
+                // 更新上次记录的值
+                lastLoaded = event.loaded;
+                lastTime = currentTime;
+              }
+            }
           });
+          
+          // 设置请求
+          xhr.open('POST', form.action, true);
+          xhr.responseType = 'json';
+          
+          // 处理请求完成
+          xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              const data = xhr.response;
+              
+              // 显示带样式的结果
+              const success = data.filter(item => item.status === 'success');
+              const failures = data.filter(item => item.status === 'failed');
 
-          const data = await response.json();
+              let resultHtml = `<div class="success" role="status">
+                                  <span><i class="fas fa-check-circle"></i> <strong>上传成功</strong> - ${success.length} 个文件已上传:</span>
+                                <ul>${success.map(f => `<li>${f.sanitizedFilename}</li>`).join('')}</ul>
+                              </div>`;
 
-          if (!response.ok) throw new Error('服务器错误');
+              if (failures.length > 0) {
+                resultHtml += `<div class="error" role="alert">
+                                 <p><i class="fas fa-exclamation-triangle"></i> <strong>上传失败</strong> - ${failures.length} 个文件未能上传:</p>
+                                 <ul>${failures.map(f => `<li>${f.filename}: ${f.error}</li>`).join('')}</ul>
+                                 </div>`;
+              }
 
-          // 显示带样式的结果
-          const success = data.filter(item => item.status === 'success');
-          const failures = data.filter(item => item.status === 'failed');
+              uploadStatus.innerHTML = resultHtml;
 
-          let resultHtml = `<div class="success" role="status">
-                              <span><i class="fas fa-check-circle"></i> <strong>上传成功</strong> - ${success.length} 个文件已上传:</span>
-                            <ul>${success.map(f => `<li>${f.sanitizedFilename}</li>`).join('')}</ul>
-                          </div>`;
+              // 成功时清除表单
+              if (failures.length === 0) fileInput.value = '';
 
-          if (failures.length > 0) {
-            resultHtml += `<div class="error" role="alert">
-                             <p><i class="fas fa-exclamation-triangle"></i> <strong>上传失败</strong> - ${failures.length} 个文件未能上传:</p>
-                             <ul>${failures.map(f => `<li>${f.filename}: ${f.error}</li>`).join('')}</ul>
-                             </div>`;
-          }
-
-          uploadStatus.innerHTML = resultHtml;
-
-          // 成功时清除表单
-          if (failures.length === 0) fileInput.value = '';
-
-          // 刷新文件列表
-          await fetch('/dash/list', { headers: { 'Cache-Control': 'no-cache' } });
-
+              // 刷新文件列表
+              fetch('/dash/list', { headers: { 'Cache-Control': 'no-cache' } });
+            } else {
+              showError(`<i class="fas fa-exclamation-circle"></i> 上传失败: 服务器错误 (${xhr.status})`);
+            }
+            
+            // 恢复按钮状态
+            uploadButton.disabled = false;
+            uploadButton.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> 上传';
+          };
+          
+          // 处理错误
+          xhr.onerror = function() {
+            showError(`<i class="fas fa-exclamation-circle"></i> 上传失败: 网络错误`);
+            uploadButton.disabled = false;
+            uploadButton.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> 上传';
+          };
+          
+          // 发送请求
+          xhr.send(formData);
         } catch (error) {
           showError(`<i class="fas fa-exclamation-circle"></i> 上传失败: ${error.message}`);
-        } finally {
           uploadButton.disabled = false;
           uploadButton.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> 上传';
         }
