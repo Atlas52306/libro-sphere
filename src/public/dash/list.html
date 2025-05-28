@@ -8,569 +8,499 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yohns/picocss@2.2.10/css/pico.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-    :root {
-        --primary-color: #4361ee;
-        --primary-hover: #3b4fd3;
-        --primary-bg: rgba(67, 97, 238, 0.1);
-        --primary-bg-hover: rgba(67, 97, 238, 0.15);
-        --text-color: #2d3748;
-        --text-light: #ffffff;
-        --text-muted: #718096;
-        --border-color: #e2e8f0;
-        --card-bg: #ffffff;
-        --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-        --card-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.12);
-        --border-radius: 8px;
-        --transition-speed: 0.2s;
-    }
-
-    @media (prefers-color-scheme: dark) {
         :root {
-            --primary-color: #4dabf7;
-            --primary-hover: #74c0fc;
-            --primary-bg: rgba(77, 171, 247, 0.1);
-            --primary-bg-hover: rgba(77, 171, 247, 0.15);
-            --text-color: #e2e8f0;
-            --text-muted: #a0aec0;
-            --border-color: #2d3748;
-            --card-bg: #1a202c;
+            --primary-color: #4361ee;
+            --primary-hover: #3b4fd3;
+            --primary-bg: rgba(67, 97, 238, 0.1);
+            --primary-bg-hover: rgba(67, 97, 238, 0.15);
+            --text-color: #2d3748;
+            --text-light: #ffffff;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --card-bg: #ffffff;
+            --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            --card-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.12);
+            --border-radius: 8px;
+            --transition-speed: 0.2s;
         }
-    }
 
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        line-height: 1.6;
-        color: var(--text-color);
-    }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #4dabf7;
+                --primary-hover: #74c0fc;
+                --primary-bg: rgba(77, 171, 247, 0.1);
+                --primary-bg-hover: rgba(77, 171, 247, 0.15);
+                --text-color: #e2e8f0;
+                --text-muted: #a0aec0;
+                --border-color: #2d3748;
+                --card-bg: #1a202c;
+            }
+        }
 
-    nav {
-        margin-bottom: 1.5rem;
-        padding: 0.8rem 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
 
-    nav .brand {
-        font-weight: 600;
-        font-size: 1.2rem;
-        color: var(--primary-color);
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        text-decoration: none;
-        white-space: nowrap;
-    }
-
-    nav .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
-
-    nav .nav-item {
-        margin: 0;
-    }
-
-    nav .nav-link {
-        border-radius: var(--border-radius);
-        padding: 0.4rem 0.8rem;
-        transition: all var(--transition-speed) ease;
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-        font-size: 0.9rem;
-        text-decoration: none;
-        color: var(--text-color);
-        white-space: nowrap;
-        background: transparent;
-    }
-
-    nav .nav-link:hover {
-        background-color: var(--primary-bg);
-        color: var(--primary-color);
-    }
-
-    nav .nav-link i {
-        font-size: 0.9rem;
-        min-width: 1.2em;
-        text-align: center;
-    }
-
-    nav .nav-link.active {
-        background-color: var(--primary-color);
-        color: var(--text-light);
-    }
-
-    nav .nav-link.active:hover {
-        background-color: var(--primary-hover);
-    }
-
-    table {
-        border-radius: var(--border-radius);
-        overflow: hidden;
-        box-shadow: var(--card-shadow);
-        border-collapse: separate;
-        border-spacing: 0;
-        width: 100%;
-        margin-bottom: 2rem;
-        background-color: var(--card-bg);
-        border: 1px solid var(--border-color);
-    }
-
-    thead {
-        background-color: var(--primary-color);
-        color: var(--text-light);
-    }
-
-    th {
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-        padding: 1rem;
-        font-weight: 600;
-    }
-
-    td {
-        padding: 1rem;
-        border-bottom: 1px solid var(--border-color);
-        vertical-align: middle;
-        color: var(--text-color);
-    }
-
-    tr:last-child td {
-        border-bottom: none;
-    }
-
-    tbody tr {
-        transition: background-color var(--transition-speed) ease;
-    }
-
-    tbody tr:hover {
-        background-color: var(--primary-bg);
-    }
-
-    .dump-cache {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        margin-bottom: 1rem;
-    }
-
-    button {
-        background-color: var(--primary-color);
-        border: none;
-        color: var(--text-light);
-        transition: all var(--transition-speed) ease;
-        border-radius: var(--border-radius);
-        padding: 0.4rem 1rem;
-        font-weight: 500;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        box-shadow: var(--card-shadow);
-        font-size: 0.9rem;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: var(--primary-hover);
-        transform: translateY(-1px);
-        box-shadow: var(--card-shadow-hover);
-    }
-
-    button.outline {
-        background-color: transparent;
-        color: var(--primary-color);
-        box-shadow: none;
-        border: 1px solid var(--primary-color);
-        padding: 0.4rem 1rem;
-    }
-
-    button.outline:hover {
-        background-color: var(--primary-bg);
-        color: var(--primary-hover);
-        border-color: var(--primary-hover);
-    }
-
-    .overflow-auto {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        position: relative;
-        background-color: var(--card-bg);
-        border-radius: var(--border-radius);
-    }
-
-    .footer {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-top: 3rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--border-color);
-        font-size: 0.9rem;
-        color: var(--text-muted);
-    }
-
-    @media (max-width: 768px) {
         nav {
-            flex-wrap: wrap;
-            padding: 0.6rem 0;
-            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            padding: 0.8rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
         }
 
         nav .brand {
-            margin-right: auto;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        nav .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        nav .nav-item {
+            margin: 0;
         }
 
         nav .nav-link {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.85rem;
+            border-radius: var(--border-radius);
+            padding: 0.4rem 0.8rem;
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+            text-decoration: none;
+            color: var(--text-color);
+            white-space: nowrap;
+            background: transparent;
         }
 
-        th, td {
-            padding: 0.8rem;
+        nav .nav-link:hover {
+            background-color: var(--primary-bg);
+            color: var(--primary-color);
+        }
+
+        nav .nav-link i {
+            font-size: 0.9rem;
+            min-width: 1.2em;
+            text-align: center;
+        }
+
+        nav .nav-link.active {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        nav .nav-link.active:hover {
+            background-color: var(--primary-hover);
+        }
+
+        table {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            margin-bottom: 2rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+
+        thead {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        th {
+            text-transform: uppercase;
             font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            color: var(--text-color);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        tbody tr:hover {
+            background-color: var(--primary-bg);
+        }
+
+        .dump-cache {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
         }
 
         button {
-            padding: 0.3rem 0.8rem;
-            font-size: 0.85rem;
+            background-color: var(--primary-color);
+            border: none;
+            color: var(--text-light);
+            transition: all var(--transition-speed) ease;
+            border-radius: var(--border-radius);
+            padding: 0.4rem 1rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            box-shadow: var(--card-shadow);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        button.outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            box-shadow: none;
+            border: 1px solid var(--primary-color);
+            padding: 0.4rem 1rem;
+        }
+
+        button.outline:hover {
+            background-color: var(--primary-bg);
+            color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        .overflow-auto {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
         }
 
         .footer {
-            margin-top: 2rem;
-            padding-top: 1rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        nav {
-            padding: 0.5rem 0;
-            gap: 0.6rem;
-        }
-
-        nav .brand {
-            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
 
-        nav .nav-link {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.8rem;
+        @media (max-width: 768px) {
+            nav {
+                flex-wrap: wrap;
+                padding: 0.6rem 0;
+                gap: 0.8rem;
+            }
+
+            nav .brand {
+                margin-right: auto;
+            }
+
+            nav .nav-link {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            button {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .footer {
+                margin-top: 2rem;
+                padding-top: 1rem;
+            }
         }
 
-        th, td {
-            padding: 0.6rem;
-            font-size: 0.8rem;
-        }
+        @media (max-width: 480px) {
+            nav {
+                padding: 0.5rem 0;
+                gap: 0.6rem;
+            }
 
-        button {
-            padding: 0.25rem 0.6rem;
-            font-size: 0.8rem;
+            nav .brand {
+                font-size: 1.1rem;
+            }
+
+            nav .nav-link {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            button {
+                padding: 0.25rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            td button, td a {
+                padding: 0.25rem;
+                font-size: 1rem;
+                min-width: auto;
+            }
+
+            td button span, td a span {
+                display: none;
+            }
+
+            td button i, td a i {
+                margin: 0;
+            }
         }
 
         td button, td a {
-            padding: 0.25rem;
-            font-size: 1rem;
-            min-width: auto;
+            background-color: var(--primary-color);
+            border: none;
+            color: var(--text-light);
+            transition: all var(--transition-speed) ease;
+            border-radius: var(--border-radius);
+            padding: 0.4rem 1rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            box-shadow: var(--card-shadow);
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
         }
 
-        td button span, td a span {
-            display: none;
+        td button:hover, td a:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--card-shadow-hover);
         }
-
-        td button i, td a i {
-            margin: 0;
-        }
-    }
-
-    td button, td a {
-        background-color: var(--primary-color);
-        border: none;
-        color: var(--text-light);
-        transition: all var(--transition-speed) ease;
-        border-radius: var(--border-radius);
-        padding: 0.4rem 1rem;
-        font-weight: 500;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        box-shadow: var(--card-shadow);
-        font-size: 0.9rem;
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-    td button:hover, td a:hover {
-        background-color: var(--primary-hover);
-        transform: translateY(-1px);
-        box-shadow: var(--card-shadow-hover);
-    }
     </style>
     <title>LibroSphere - 文件列表</title>
 </head>
 
 <body>
-    <header class="container">
-        <nav>
-            <a href="/web" class="brand">
-                <i class="fas fa-book"></i>
-                <span>LibroSphere</span>
-            </a>
-            <ul class="nav-links">
-                <li class="nav-item">
-                    <a href="/web/upload" class="nav-link">
-                        <i class="fas fa-upload"></i>
-                        <span>上传</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/web/list" class="nav-link active">
-                        <i class="fas fa-list"></i>
-                        <span>查看文件</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+<header class="container">
+    <nav>
+        <a href="/web" class="brand">
+            <i class="fas fa-book"></i>
+            <span>LibroSphere</span>
+        </a>
+        <ul class="nav-links">
+            <li class="nav-item">
+                <a href="/web/upload" class="nav-link">
+                    <i class="fas fa-upload"></i>
+                    <span>上传</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/web/list" class="nav-link active">
+                    <i class="fas fa-list"></i>
+                    <span>查看文件</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
 
-    <main class="container">
-        <section>
-            <h2><i class="fas fa-file-alt"></i> 文件列表</h2>
-            <div class="dump-cache" style="display: none;">
-                <button class="outline" type="button" onclick="dumpCache()"><i class="fas fa-sync"></i> 刷新文件列表</button>
-            </div>
-            <div class="debug-tools" style="display: none; margin-bottom: 1rem;">
-                <button class="outline" style="background-color: #f97316; color: white; border-color: #f97316;" type="button" onclick="debugFileList()">
-                    <i class="fas fa-bug"></i> 诊断问题
-                </button>
-            </div>
-            <div class="overflow-auto">
-                <table>
-                    <thead>
-                        <tr>
-                            <th scope="row">文件名</th>
-                            <th scope="row">大小</th>
-                            <th scope="row">最后修改</th>
-                            <th scope="row">下载</th>
-                            <th scope="row">删除</th>
-                        </tr>
-                    </thead>
-                    <tbody id="fileList">
-                        <!-- 文件将动态插入此处 -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+<main class="container">
+    <section>
+        <h2><i class="fas fa-file-alt"></i> 文件列表</h2>
+        <div class="dump-cache" style="display: none;">
+            <button class="outline" type="button" onclick="dumpCache()"><i class="fas fa-sync"></i> 刷新文件列表</button>
+        </div>
+        <div class="overflow-auto">
+            <table>
+                <thead>
+                <tr>
+                    <th scope="row">文件名</th>
+                    <th scope="row">大小</th>
+                    <th scope="row">最后修改</th>
+                    <th scope="row">下载</th>
+                    <th scope="row">删除</th>
+                </tr>
+                </thead>
+                <tbody id="fileList">
+                <!-- 文件将动态插入此处 -->
+                </tbody>
+            </table>
+        </div>
+    </section>
 
-        <footer class="footer">
+    <footer class="footer">
             <span>
                 <span id="year"></span> &copy; Atlas
             </span>
-        </footer>
-    </main>
+    </footer>
+</main>
 
-    <script>
-        // 存储认证信息
-        let authHeader = '';
+<script>
+    // 存储认证信息
+    let authHeader = '';
 
-        // 获取并显示文件列表
-        async function loadFileList() {
+    // 获取并显示文件列表
+    async function loadFileList() {
+        try {
+            const response = await fetch('/', {
+                method: 'PROPFIND',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`服务器返回错误: ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.text();
+
+            // 解析XML响应
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(data, "application/xml");
+
+            // 检查是否解析出错
+            const parseError = xmlDoc.querySelector("parsererror");
+            if (parseError) {
+                throw new Error("解析XML响应失败");
+            }
+
+            // 提取文件详情
+            const files = xmlDoc.querySelectorAll('D\\:response, response'); // 处理"D:"和无命名空间
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = ''; // 清除现有内容
+
+            let hasFiles = false;
+
+            files.forEach(file => {
+                const href = file.querySelector('D\\:href, href').textContent;
+                const size = file.querySelector('D\\:getcontentlength, getcontentlength')?.textContent || 'N/A';
+                const lastModified = file.querySelector('D\\:getlastmodified, getlastmodified')?.textContent || 'N/A';
+
+                // 跳过根目录条目
+                if (href === '/') return;
+
+                hasFiles = true;
+
+                // 为每个文件创建表格行
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                        <td>${decodeURIComponent(href.split('/').pop())}</td>
+                        <td>${formatBytes(size)}</td>
+                        <td>${new Date(lastModified).toLocaleString()}</td>
+                        <td><a href="${href}" download><i class="fas fa-download"></i> <span>下载</span></a></td>
+                        <td><button onclick="deleteFile('${href}')"><i class="fas fa-trash"></i> <span>删除</span></button></td>
+                    `;
+                fileList.appendChild(row);
+            });
+
+            // 控制刷新按钮的显示
+            const dumpCacheButton = document.querySelector('.dump-cache');
+            if (hasFiles) {
+                dumpCacheButton.style.display = 'flex';
+            }
+
+            // 如果没有文件，显示提示
+            if (!hasFiles) {
+                fileList.innerHTML = `<tr><td colspan="5" style="text-align: center;"><i class="fas fa-info-circle"></i> 当前没有文件。</td></tr>`;
+            }
+        } catch (error) {
+            console.error('加载文件列表时出错:', error);
+            document.getElementById('fileList').innerHTML = `<tr><td colspan="5" style="text-align: center;"><i class="fas fa-exclamation-circle"></i> 无法加载文件列表。请<a href="#" onclick="loadFileList(); return false;">重试</a>或检查网络连接。</td></tr>`;
+            // 出错时也隐藏按钮
+            document.querySelector('.dump-cache').style.display = 'none';
+        }
+    }
+
+    // 辅助函数，用于格式化文件大小
+    function formatBytes(bytes) {
+        if (bytes === 'N/A') return 'N/A';
+        bytes = parseInt(bytes);
+        if (bytes === 0) return '0 字节';
+        const k = 1024;
+        const sizes = ['字节', 'KB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    async function dumpCache() {
+        if (confirm('确定要刷新文件列表缓存吗？这将显示最新的文件状态。')) {
             try {
-                const response = await fetch('/', {
-                    method: 'PROPFIND',
-                    headers: {
-                        'Cache-Control': 'no-cache',
-                        'Pragma': 'no-cache'
-                    }
-                });
+                const response = await fetch('/dumpcache', { method: 'GET' });
 
-                if (!response.ok) {
-                    throw new Error(`服务器返回错误: ${response.status} ${response.statusText}`);
-                }
-
-                const data = await response.text();
-
-                // 解析XML响应
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(data, "application/xml");
-
-                // 检查是否解析出错
-                const parseError = xmlDoc.querySelector("parsererror");
-                if (parseError) {
-                    console.error("XML解析错误：", parseError.textContent);
-                    console.log("原始响应数据：", data.substring(0, 200) + (data.length > 200 ? "..." : ""));
-                    throw new Error("解析XML响应失败");
-                }
-
-                // 尝试获取文件列表，使用不同的选择器组合以处理各种命名空间情况
-                let files = xmlDoc.querySelectorAll('D\\:response, response');
-                if (files.length === 0) {
-                    // 尝试使用不同的选择器
-                    files = xmlDoc.querySelectorAll('*|response');
-                }
-
-                if (files.length === 0) {
-                    console.warn("未找到文件列表元素，XML结构可能不符合预期");
-                    console.log("文档元素：", xmlDoc.documentElement.tagName);
-                    throw new Error("无法识别文件列表格式");
-                }
-
-                const fileList = document.getElementById('fileList');
-                fileList.innerHTML = ''; // 清除现有内容
-
-                let hasFiles = false;
-
-                files.forEach(file => {
-                    try {
-                        // 使用多种选择器尝试获取元素
-                        const hrefEl = file.querySelector('D\\:href, href, *|href');
-                        const sizeEl = file.querySelector('D\\:getcontentlength, getcontentlength, *|getcontentlength');
-                        const dateEl = file.querySelector('D\\:getlastmodified, getlastmodified, *|getlastmodified');
-
-                        if (!hrefEl) {
-                            console.warn("文件条目缺少href元素：", file.outerHTML);
-                            return;
-                        }
-
-                        const href = hrefEl.textContent;
-                        const size = sizeEl?.textContent || 'N/A';
-                        const lastModified = dateEl?.textContent || 'N/A';
-
-                        // 跳过根目录条目
-                        if (href === '/') return;
-
-                        hasFiles = true;
-
-                        // 为每个文件创建表格行
-                        const row = document.createElement('tr');
-
-                        row.innerHTML = `
-                            <td>${decodeURIComponent(href.split('/').pop())}</td>
-                            <td>${formatBytes(size)}</td>
-                            <td>${new Date(lastModified).toLocaleString()}</td>
-                            <td><a href="${href}" download><i class="fas fa-download"></i> <span>下载</span></a></td>
-                            <td><button onclick="deleteFile('${href}')"><i class="fas fa-trash"></i> <span>删除</span></button></td>
-                        `;
-                        fileList.appendChild(row);
-                    } catch (fileError) {
-                        console.error("处理文件条目时出错：", fileError);
-                    }
-                });
-
-                // 控制刷新按钮的显示
-                const dumpCacheButton = document.querySelector('.dump-cache');
-                if (hasFiles) {
-                    dumpCacheButton.style.display = 'flex';
-                }
-
-                // 如果没有文件，显示提示
-                if (!hasFiles) {
-                    fileList.innerHTML = `<tr><td colspan="5" style="text-align: center;"><i class="fas fa-info-circle"></i> 当前没有文件。</td></tr>`;
+                if (response.ok) {
+                    alert('文件列表已刷新！');
+                    loadFileList(); // 刷新文件列表
+                } else {
+                    alert('刷新失败: ' + response.statusText + '\n请稍后重试。');
                 }
             } catch (error) {
-                console.error('加载文件列表时出错:', error);
-                document.getElementById('fileList').innerHTML = `<tr><td colspan="5" style="text-align: center;"><i class="fas fa-exclamation-circle"></i> 无法加载文件列表。请<a href="#" onclick="loadFileList(); return false;">重试</a>或检查网络连接。</td></tr>`;
-                // 出错时也隐藏按钮
-                document.querySelector('.dump-cache').style.display = 'none';
+                alert('刷新失败: ' + error.message + '\n请检查您的网络连接。');
             }
         }
-
-        // 辅助函数，用于格式化文件大小
-        function formatBytes(bytes) {
-            if (bytes === 'N/A') return 'N/A';
-            bytes = parseInt(bytes);
-            if (bytes === 0) return '0 字节';
-            const k = 1024;
-            const sizes = ['字节', 'KB', 'MB', 'GB', 'TB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        async function dumpCache() {
-            if (confirm('确定要刷新文件列表缓存吗？这将显示最新的文件状态。')) {
-                try {
-                    const response = await fetch('/dumpcache', { method: 'GET' });
-
-                    if (response.ok) {
-                        alert('文件列表已刷新！');
-                        loadFileList(); // 刷新文件列表
-                    } else {
-                        alert('刷新失败: ' + response.statusText + '\n请稍后重试。');
-                    }
-                } catch (error) {
-                    alert('刷新失败: ' + error.message + '\n请检查您的网络连接。');
-                }
-            }
-        }
-        // 删除文件
-        async function deleteFile(filePath) {
-            const fileName = decodeURIComponent(filePath.split('/').pop());
-            if (confirm(`确定要删除文件 "${fileName}" 吗？\n此操作无法撤销。`)) {
-                try {
-                    const response = await fetch(filePath, { method: 'DELETE' });
-                    if (response.ok) {
-                        alert(`文件 "${fileName}" 已成功删除！`);
-                        loadFileList(); // 刷新文件列表
-                    } else {
-                        alert(`删除文件失败: ${response.statusText}\n请稍后重试。`);
-                    }
-                } catch (error) {
-                    alert(`删除文件时出错: ${error.message}\n请检查您的网络连接。`);
-                }
-            }
-        }
-
-        // 添加调试功能
-        async function debugFileList() {
+    }
+    // 删除文件
+    async function deleteFile(filePath) {
+        const fileName = decodeURIComponent(filePath.split('/').pop());
+        if (confirm(`确定要删除文件 "${fileName}" 吗？\n此操作无法撤销。`)) {
             try {
-                const response = await fetch('/', {
-                    method: 'PROPFIND',
-                    headers: {
-                        'Cache-Control': 'no-cache',
-                        'Pragma': 'no-cache'
-                    }
-                });
-
-                if (!response.ok) {
-                    alert(`服务器返回错误: ${response.status} ${response.statusText}`);
-                    return;
+                const response = await fetch(filePath, { method: 'DELETE' });
+                if (response.ok) {
+                    alert(`文件 "${fileName}" 已成功删除！`);
+                    loadFileList(); // 刷新文件列表
+                } else {
+                    alert(`删除文件失败: ${response.statusText}\n请稍后重试。`);
                 }
-
-                const data = await response.text();
-
-                // 显示原始响应内容
-                const debugInfo = `
-状态码: ${response.status}
-内容类型: ${response.headers.get('Content-Type')}
-响应大小: ${data.length} 字节
-
-响应内容预览:
-${data.substring(0, 500)}${data.length > 500 ? '...(已截断)' : ''}
-                `;
-
-                console.log("完整响应:", data);
-                alert(debugInfo);
             } catch (error) {
-                alert(`诊断时出错: ${error.message}`);
+                alert(`删除文件时出错: ${error.message}\n请检查您的网络连接。`);
             }
         }
+    }
 
-        // 显示调试工具
-        document.querySelector('.debug-tools').style.display = 'flex';
+    // 页面加载时加载文件列表
+    window.onload = loadFileList;
 
-        // 页面加载时加载文件列表
-        window.onload = loadFileList;
-
-        // 设置年份
-        const yearElement = document.querySelector("#year")
-        const year = new Date().getFullYear()
-        yearElement.innerHTML = year
-    </script>
+    // 设置年份
+    const yearElement = document.querySelector("#year")
+    const year = new Date().getFullYear()
+    yearElement.innerHTML = year
+</script>
 </body>
 
 </html>
