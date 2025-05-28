@@ -344,6 +344,11 @@
             <div class="dump-cache" style="display: none;">
                 <button class="outline" type="button" onclick="dumpCache()"><i class="fas fa-sync"></i> 刷新文件列表</button>
             </div>
+            <div class="debug-tools" style="display: none; margin-bottom: 1rem;">
+                <button class="outline" style="background-color: #f97316; color: white; border-color: #f97316;" type="button" onclick="debugFileList()">
+                    <i class="fas fa-bug"></i> 诊断问题
+                </button>
+            </div>
             <div class="overflow-auto">
                 <table>
                     <thead>
@@ -397,37 +402,64 @@
                 // 检查是否解析出错
                 const parseError = xmlDoc.querySelector("parsererror");
                 if (parseError) {
+                    console.error("XML解析错误：", parseError.textContent);
+                    console.log("原始响应数据：", data.substring(0, 200) + (data.length > 200 ? "..." : ""));
                     throw new Error("解析XML响应失败");
                 }
 
-                // 提取文件详情
-                const files = xmlDoc.querySelectorAll('D\\:response, response'); // 处理"D:"和无命名空间
+                // 尝试获取文件列表，使用不同的选择器组合以处理各种命名空间情况
+                let files = xmlDoc.querySelectorAll('D\\:response, response');
+                if (files.length === 0) {
+                    // 尝试使用不同的选择器
+                    files = xmlDoc.querySelectorAll('*|response');
+                }
+                
+                if (files.length === 0) {
+                    console.warn("未找到文件列表元素，XML结构可能不符合预期");
+                    console.log("文档元素：", xmlDoc.documentElement.tagName);
+                    throw new Error("无法识别文件列表格式");
+                }
+                
                 const fileList = document.getElementById('fileList');
                 fileList.innerHTML = ''; // 清除现有内容
 
                 let hasFiles = false;
 
                 files.forEach(file => {
-                    const href = file.querySelector('D\\:href, href').textContent;
-                    const size = file.querySelector('D\\:getcontentlength, getcontentlength')?.textContent || 'N/A';
-                    const lastModified = file.querySelector('D\\:getlastmodified, getlastmodified')?.textContent || 'N/A';
+                    try {
+                        // 使用多种选择器尝试获取元素
+                        const hrefEl = file.querySelector('D\\:href, href, *|href');
+                        const sizeEl = file.querySelector('D\\:getcontentlength, getcontentlength, *|getcontentlength');
+                        const dateEl = file.querySelector('D\\:getlastmodified, getlastmodified, *|getlastmodified');
+                        
+                        if (!hrefEl) {
+                            console.warn("文件条目缺少href元素：", file.outerHTML);
+                            return;
+                        }
+                        
+                        const href = hrefEl.textContent;
+                        const size = sizeEl?.textContent || 'N/A';
+                        const lastModified = dateEl?.textContent || 'N/A';
 
-                    // 跳过根目录条目
-                    if (href === '/') return;
+                        // 跳过根目录条目
+                        if (href === '/') return;
 
-                    hasFiles = true;
+                        hasFiles = true;
 
-                    // 为每个文件创建表格行
-                    const row = document.createElement('tr');
+                        // 为每个文件创建表格行
+                        const row = document.createElement('tr');
 
-                    row.innerHTML = `
-                        <td>${decodeURIComponent(href.split('/').pop())}</td>
-                        <td>${formatBytes(size)}</td>
-                        <td>${new Date(lastModified).toLocaleString()}</td>
-                        <td><a href="${href}" download><i class="fas fa-download"></i> <span>下载</span></a></td>
-                        <td><button onclick="deleteFile('${href}')"><i class="fas fa-trash"></i> <span>删除</span></button></td>
-                    `;
-                    fileList.appendChild(row);
+                        row.innerHTML = `
+                            <td>${decodeURIComponent(href.split('/').pop())}</td>
+                            <td>${formatBytes(size)}</td>
+                            <td>${new Date(lastModified).toLocaleString()}</td>
+                            <td><a href="${href}" download><i class="fas fa-download"></i> <span>下载</span></a></td>
+                            <td><button onclick="deleteFile('${href}')"><i class="fas fa-trash"></i> <span>删除</span></button></td>
+                        `;
+                        fileList.appendChild(row);
+                    } catch (fileError) {
+                        console.error("处理文件条目时出错：", fileError);
+                    }
                 });
 
                 // 控制刷新按钮的显示
@@ -492,6 +524,44 @@
                 }
             }
         }
+
+        // 添加调试功能
+        async function debugFileList() {
+            try {
+                const response = await fetch('/', { 
+                    method: 'PROPFIND',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                
+                if (!response.ok) {
+                    alert(`服务器返回错误: ${response.status} ${response.statusText}`);
+                    return;
+                }
+                
+                const data = await response.text();
+                
+                // 显示原始响应内容
+                const debugInfo = `
+状态码: ${response.status}
+内容类型: ${response.headers.get('Content-Type')}
+响应大小: ${data.length} 字节
+
+响应内容预览:
+${data.substring(0, 500)}${data.length > 500 ? '...(已截断)' : ''}
+                `;
+                
+                console.log("完整响应:", data);
+                alert(debugInfo);
+            } catch (error) {
+                alert(`诊断时出错: ${error.message}`);
+            }
+        }
+        
+        // 显示调试工具
+        document.querySelector('.debug-tools').style.display = 'flex';
 
         // 页面加载时加载文件列表
         window.onload = loadFileList;

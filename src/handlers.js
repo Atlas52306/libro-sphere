@@ -61,9 +61,17 @@ export async function handleMultipleUploads(request, env, ctx) {
                     await env.MY_BUCKET.put(sanitizedFilename, data, { httpMetadata: { contentType } });
                     results.push({ sanitizedFilename, status: "success", contentType });
 
+                    // 清除根目录缓存以便显示新文件
                     const cache = caches.default;
-                    const cacheKey = new Request(new URL("/", request.url).toString(), { cf: { cacheTtl: 604800 } });
+                    const cacheKey = new Request(new URL("/", request.url).toString());
                     ctx.waitUntil(cache.delete(cacheKey));
+                    
+                    // 同时清除PROPFIND缓存
+                    const propfindKey = new Request(new URL("/", request.url).toString(), { 
+                        method: 'PROPFIND',
+                        headers: { 'Depth': '1' }
+                    });
+                    ctx.waitUntil(cache.delete(propfindKey));
                 } catch (error) {
                     console.error("Upload error:", error.name);
                     results.push({ filename, status: "failed", error: "存储服务错误，请稍后重试" });
@@ -188,38 +196,36 @@ export async function handleFileList(request, env, ctx) {
         // List objects in R2 with the correct prefix
         const objects = await env.MY_BUCKET.list({ prefix });
         
-        // Generate WebDAV XML response
-        const xmlResponse = `
-        <D:multistatus xmlns:D="DAV:">
-            <D:response>
-            <D:href>${path}</D:href>
-            <D:propstat>
-                <D:prop>
+        // Generate WebDAV XML response with proper XML declaration and formatting
+        const xmlResponse = `<?xml version="1.0" encoding="UTF-8"?>
+<D:multistatus xmlns:D="DAV:">
+    <D:response>
+        <D:href>${path}</D:href>
+        <D:propstat>
+            <D:prop>
                 <D:resourcetype><D:collection/></D:resourcetype>
                 <D:displayname>${path === "/" ? "root" : path.split("/").pop()}</D:displayname>
-                </D:prop>
-                <D:status>HTTP/1.1 200 OK</D:status>
-            </D:propstat>
-            </D:response>
-            ${objects.objects
-                .map(
-                    (obj) => `
-                <D:response>
-                    <D:href>/${encodeURIComponent(obj.key)}</D:href>
-                    <D:propstat>
-                    <D:prop>
-                        <D:resourcetype/> <!-- Empty for files -->
-                        <D:getcontentlength>${obj.size}</D:getcontentlength>
-                        <D:getlastmodified>${new Date(obj.uploaded).toUTCString()}</D:getlastmodified>
-                    </D:prop>
-                    <D:status>HTTP/1.1 200 OK</D:status>
-                    </D:propstat>
-                </D:response>
-                `
-                )
-                .join("")}
-        </D:multistatus>
-        `;
+            </D:prop>
+            <D:status>HTTP/1.1 200 OK</D:status>
+        </D:propstat>
+    </D:response>
+    ${objects.objects
+        .map(
+            (obj) => `
+    <D:response>
+        <D:href>/${encodeURIComponent(obj.key)}</D:href>
+        <D:propstat>
+            <D:prop>
+                <D:resourcetype/>
+                <D:getcontentlength>${obj.size}</D:getcontentlength>
+                <D:getlastmodified>${new Date(obj.uploaded).toUTCString()}</D:getlastmodified>
+            </D:prop>
+            <D:status>HTTP/1.1 200 OK</D:status>
+        </D:propstat>
+    </D:response>`
+        )
+        .join("")}
+</D:multistatus>`;
 
         const response = new Response(xmlResponse, {
             headers: {
@@ -246,9 +252,25 @@ export async function dumpCache(request, env, ctx) {
     try {
         const listingUrl = new URL('/', url.origin).toString();
         const cache = caches.default;
-        const cacheKey = new Request(listingUrl, { cf: { cacheTtl: 604800 } });
+        
+        // 清除GET请求的缓存
+        const cacheKey = new Request(listingUrl);
         ctx.waitUntil(cache.delete(cacheKey));
-        return new Response('缓存已成功刷新', { status: 200 });
+        
+        // 清除PROPFIND请求的缓存
+        const propfindKey = new Request(listingUrl, { 
+            method: 'PROPFIND',
+            headers: { 'Depth': '1' }
+        });
+        ctx.waitUntil(cache.delete(propfindKey));
+        
+        return new Response('缓存已成功刷新', { 
+            status: 200,
+            headers: {
+                'Content-Type': 'text/plain;charset=UTF-8',
+                'Cache-Control': 'no-store'
+            }
+        });
     } catch (error) {
         console.error("Cache dump error:", error.name);
         return new Response('刷新缓存失败，请稍后重试', { status: 500 });
