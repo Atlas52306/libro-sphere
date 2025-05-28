@@ -4,7 +4,7 @@
  */
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "LibroSphere-worker",
+  "name": "librosphere-worker",
   "main": "src/index.js",
   "compatibility_date": "2025-02-14",
   "observability": {
@@ -13,7 +13,7 @@
    "r2_buckets": [
     {
       "binding": "MY_BUCKET", // Name of the binding in your worker
-      "bucket_name": "LibroSphere" // Name of your R2 bucket
+      "bucket_name": "librosphere" // Name of your R2 bucket
     }
   ],
   /**
