@@ -3,7 +3,7 @@ import upload from '../src/public/dash/upload.html'
 import list from '../src/public/dash/list.html'
 import notfoundpage from '../src/public/dash/404.html'
 import { corsHeaders, securityHeaders, is_authorized } from './utils'
-import { dumpCache, handleDeleteFile, handleFileList, handleGetFile, handleMultpleUploads, handlePutFile } from './handlers'
+import { dumpCache, handleDeleteFile, handleFileList, handleGetFile, handleMultipleUploads, handlePutFile } from './handlers'
 
 const AUTH_REALM = 'LibroSphere';
 const MAX_REQUESTS_PER_MINUTE = 60; // 速率限制：每分钟最大请求数
@@ -103,13 +103,10 @@ export default {
 
 			// 处理favicon请求，不需要鉴权
 			if (request.method === "GET" && path === "/favicon.ico") {
-				const favicon = './favicon.ico'
-				if (!favicon) {
-					return new Response("Favicon not found", { status: 404 });
-				}
-				return new Response(favicon.body, {
+				// 返回一个空响应，避免错误
+				return new Response(null, {
+					status: 204,
 					headers: {
-						"Content-Type": "image/x-icon",
 						"Cache-Control": "public, max-age=604800"
 					}
 				});
@@ -156,7 +153,7 @@ export default {
 			}
 
 			if (request.method === "POST" && path === "/upload") {
-				return handleMultpleUploads(request, env, ctx);
+				return handleMultipleUploads(request, env, ctx);
 			}
 
 			if (request.method === "GET") {

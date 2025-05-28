@@ -31,7 +31,7 @@ export async function handleDeleteFile(request, env, ctx) {
     }
 }
 
-export async function handleMultpleUploads(request, env, ctx) {
+export async function handleMultipleUploads(request, env, ctx) {
     try {
         const formData = await request.formData();
         const results = [];
@@ -174,7 +174,7 @@ export async function handleFileList(request, env, ctx) {
             return new Response("目录路径无效，请检查是否包含不支持的特殊字符", { status: 400, headers: corsHeaders });
         }
 
-        const bypassCache = true; // 始终绕过缓存以确保最新列表
+        const bypassCache = false; // 允许使用缓存以提高性能
         const cache = caches.default;
         const cacheKey = new Request(request.url, { cf: { cacheTtl: 604800 } });
 
@@ -225,8 +225,14 @@ export async function handleFileList(request, env, ctx) {
             headers: {
                 ...corsHeaders,
                 "Content-Type": "application/xml",
+                "Cache-Control": "public, max-age=3600"
             },
         });
+        
+        // 将响应存入缓存
+        if (!bypassCache) {
+            ctx.waitUntil(cache.put(cacheKey, response.clone()));
+        }
         
         return response;
     } catch (error) {
