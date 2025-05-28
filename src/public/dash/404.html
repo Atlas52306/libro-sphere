@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yohns/picocss@2.2.10/css/pico.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+  :root {
+      --primary-color: #4361ee;
+      --primary-hover: #3b4fd3;
+      --primary-bg: rgba(67, 97, 238, 0.1);
+      --primary-bg-hover: rgba(67, 97, 238, 0.15);
+      --text-color: #2d3748;
+      --text-light: #ffffff;
+      --text-muted: #718096;
+      --border-color: #e2e8f0;
+      --card-bg: #ffffff;
+      --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+      --card-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.12);
+      --border-radius: 8px;
+      --transition-speed: 0.2s;
+  }
+
+  @media (prefers-color-scheme: dark) {
+      :root {
+          --primary-color: #4dabf7;
+          --primary-hover: #74c0fc;
+          --primary-bg: rgba(77, 171, 247, 0.1);
+          --primary-bg-hover: rgba(77, 171, 247, 0.15);
+          --text-color: #e2e8f0;
+          --text-muted: #a0aec0;
+          --border-color: #2d3748;
+          --card-bg: #1a202c;
+      }
+  }
+
+  body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+  }
+
+  nav {
+      margin-bottom: 1.5rem;
+      padding: 0.8rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+  }
+
+  nav .brand {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      white-space: nowrap;
+  }
+
+  nav .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+  }
+
+  nav .nav-item {
+      margin: 0;
+  }
+
+  nav .nav-link {
+      border-radius: var(--border-radius);
+      padding: 0.4rem 0.8rem;
+      transition: all var(--transition-speed) ease;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: var(--text-color);
+      white-space: nowrap;
+      background: transparent;
+  }
+
+  nav .nav-link:hover {
+      background-color: var(--primary-bg);
+      color: var(--primary-color);
+  }
+
+  nav .nav-link i {
+      font-size: 0.9rem;
+      min-width: 1.2em;
+      text-align: center;
+  }
+
+  .error-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      margin: 2rem auto;
+      max-width: 600px;
+      border: 1px solid var(--border-color);
+  }
+
+  .error-code {
+      font-size: 6rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 0;
+      line-height: 1;
+  }
+
+  .error-message {
+      font-size: 1.5rem;
+      color: var(--text-color);
+      margin: 1rem 0;
+  }
+
+  .error-description {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+  }
+
+  .back-button {
+      background-color: var(--primary-color);
+      color: var(--text-light);
+      text-decoration: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--border-radius);
+      transition: all var(--transition-speed) ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+  }
+
+  .back-button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+  }
+
+  .footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+  }
+
+  @media (max-width: 768px) {
+      nav {
+          flex-wrap: wrap;
+          padding: 0.6rem 0;
+          gap: 0.8rem;
+      }
+
+      nav .brand {
+          margin-right: auto;
+      }
+
+      nav .nav-link {
+          padding: 0.3rem 0.6rem;
+          font-size: 0.85rem;
+      }
+
+      .error-container {
+          margin: 1rem;
+          padding: 1.5rem;
+      }
+
+      .error-code {
+          font-size: 4rem;
+      }
+
+      .error-message {
+          font-size: 1.2rem;
+      }
+  }
+
+  @media (max-width: 480px) {
+      nav {
+          padding: 0.5rem 0;
+          gap: 0.6rem;
+      }
+
+      nav .brand {
+          font-size: 1.1rem;
+      }
+
+      nav .nav-link {
+          padding: 0.25rem 0.5rem;
+          font-size: 0.8rem;
+      }
+
+      .error-container {
+          margin: 0.5rem;
+          padding: 1rem;
+      }
+
+      .error-code {
+          font-size: 3rem;
+      }
+
+      .error-message {
+          font-size: 1rem;
+      }
+
+      .error-description {
+          font-size: 0.9rem;
+      }
+  }
+  </style>
+  <title>404 - 页面未找到</title>
+</head>
+
+<body>
+  <header class="container">
+    <nav>
+      <a href="/web" class="brand">
+        <i class="fas fa-book"></i>
+        <span>LibroSphere</span>
+      </a>
+      <ul class="nav-links">
+        <li class="nav-item">
+          <a href="/web/upload" class="nav-link">
+            <i class="fas fa-upload"></i>
+            <span>上传</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/web/list" class="nav-link">
+            <i class="fas fa-list"></i>
+            <span>查看文件</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="error-container">
+      <h1 class="error-code">404</h1>
+      <h2 class="error-message">页面未找到</h2>
+      <p class="error-description">抱歉，您访问的页面不存在或已被移除。您可能输入了错误的地址或者链接已过期。</p>
+      <a href="/web" class="back-button">
+        <i class="fas fa-home"></i>
+        <span>返回首页</span>
+      </a>
+    </div>
+  </main>
+    
+    <footer class="footer">
+      <span>
+        <span id="year"></span> &copy; Atlas
+      </span>
+    </footer>
+  
+  <script>
+    const yearElement = document.querySelector("#year")
+    const year = new Date().getFullYear()
+    yearElement.innerHTML = year
+  </script>
+</body>
+
+</html>
