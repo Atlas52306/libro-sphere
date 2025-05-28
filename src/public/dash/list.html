@@ -341,7 +341,7 @@
 <main class="container">
     <section>
         <h2><i class="fas fa-file-alt"></i> 文件列表</h2>
-        <div class="dump-cache" style="display: none;">
+        <div class="dump-cache">
             <button class="outline" type="button" onclick="dumpCache()"><i class="fas fa-sync"></i> 刷新文件列表</button>
         </div>
         <div class="overflow-auto">
@@ -430,12 +430,6 @@
                 fileList.appendChild(row);
             });
 
-            // 控制刷新按钮的显示
-            const dumpCacheButton = document.querySelector('.dump-cache');
-            if (hasFiles) {
-                dumpCacheButton.style.display = 'flex';
-            }
-
             // 如果没有文件，显示提示
             if (!hasFiles) {
                 fileList.innerHTML = `<tr><td colspan="5" style="text-align: center;"><i class="fas fa-info-circle"></i> 当前没有文件。</td></tr>`;
@@ -443,8 +437,6 @@
         } catch (error) {
             console.error('加载文件列表时出错:', error);
             document.getElementById('fileList').innerHTML = `<tr><td colspan="5" style="text-align: center;"><i class="fas fa-exclamation-circle"></i> 无法加载文件列表。请<a href="#" onclick="loadFileList(); return false;">重试</a>或检查网络连接。</td></tr>`;
-            // 出错时也隐藏按钮
-            document.querySelector('.dump-cache').style.display = 'none';
         }
     }
 
