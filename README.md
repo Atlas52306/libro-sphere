@@ -24,7 +24,7 @@ LibroSphere是一个基于Cloudflare Workers和R2存储构建的现代化电子�
 
 1. **创建R2存储桶**
    - 登录Cloudflare控制面板
-   - 创建名为`librosphere`的R2存储桶（也可以不创建，如果token有r2的权限的话，会新建一个）
+   - 创建名为`librosphere`的R2存储桶
 
 2. **获取API凭证**
    - 创建Cloudflare API令牌，确保有R2和Workers权限

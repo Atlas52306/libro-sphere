@@ -323,12 +323,6 @@
             </a>
             <ul class="nav-links">
                 <li class="nav-item">
-                    <a href="/web/upload" class="nav-link">
-                        <i class="fas fa-upload"></i>
-                        <span>上传</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a href="/web/list" class="nav-link active">
                         <i class="fas fa-list"></i>
                         <span>查看文件</span>
@@ -385,6 +379,8 @@
                 const fileList = document.getElementById('fileList');
                 fileList.innerHTML = ''; // 清除现有内容
 
+                let hasFiles = false;
+
                 files.forEach(file => {
                     const href = file.querySelector('D\\:href, href').textContent;
                     const size = file.querySelector('D\\:getcontentlength, getcontentlength')?.textContent || 'N/A';
@@ -392,6 +388,8 @@
 
                     // 跳过根目录条目
                     if (href === '/') return;
+
+                    hasFiles = true;
 
                     // 为每个文件创建表格行
                     const row = document.createElement('tr');
@@ -406,13 +404,19 @@
                     fileList.appendChild(row);
                 });
 
+                // 控制刷新按钮的显示
+                const dumpCacheButton = document.querySelector('.dump-cache');
+                dumpCacheButton.style.display = hasFiles ? 'flex' : 'none';
+
                 // 如果没有文件，显示提示
-                if (fileList.children.length === 0) {
-                    fileList.innerHTML = `<tr><td colspan="5" style="text-align: center;"><i class="fas fa-info-circle"></i> 当前没有文件。您可以通过<a href="/web/upload">上传页面</a>添加文件。</td></tr>`;
+                if (!hasFiles) {
+                    fileList.innerHTML = `<tr><td colspan="5" style="text-align: center;"><i class="fas fa-info-circle"></i> 当前没有文件。</td></tr>`;
                 }
             } catch (error) {
                 console.error('加载文件列表时出错:', error);
                 document.getElementById('fileList').innerHTML = `<tr><td colspan="5" style="text-align: center;"><i class="fas fa-exclamation-circle"></i> 无法加载文件列表。请<a href="#" onclick="loadFileList(); return false;">重试</a>或检查网络连接。</td></tr>`;
+                // 出错时也隐藏按钮
+                document.querySelector('.dump-cache').style.display = 'none';
             }
         }
 
